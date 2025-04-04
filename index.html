@@ -1,16 +1,17 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Matriz de Competencias - Interactiva</title>
+  <title>Instrumento Diagnóstico</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     body { font-family: Arial, sans-serif; background-color: #f4f4f9; margin: 0; padding: 20px; }
     h1 { text-align: center; margin-bottom: 30px; }
     .form-group { margin-bottom: 15px; }
     label { display: block; margin-bottom: 5px; }
-    input[type="text"], input[type="email"] {
+    input[type="text"], input[type="email"], select {
       width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;
     }
     .accordion {
@@ -20,8 +21,14 @@
     }
     .active, .accordion:hover { background-color: #e2e2f0; }
     .panel {
-      padding: 0 18px 15px 18px; display: none; background-color: white; overflow: hidden;
-      border-radius: 0 0 8px 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); margin-bottom: 15px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+      background-color: white;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      margin-bottom: 15px;
+      padding: 0 18px;
     }
     li { margin: 15px 0; list-style: none; }
     label.inline { display: inline-block; margin-right: 15px; }
@@ -34,35 +41,32 @@
   </style>
 </head>
 <body>
-  <h1 class="mb-4 text-primary">Instrumento Diagnóstico sobre Competencias TIC e Inteligencia Artificial Generativa</h1>
+  <h1>Instrumento Diagnóstico sobre Competencias TIC e Inteligencia Artificial Generativa</h1>
 
-<div class="form-group">
-  <p>
-    ¡Bienvenido(a)! Este <strong>Instrumento Diagnóstico sobre Competencias TIC e Inteligencia Artificial Generativa</strong> ha sido creado para identificar su nivel de dominio en el uso de tecnologías aplicadas a los ámbitos educativo, investigativo y administrativo.
-  </p>
+  <div class="form-group">
+    <p>
+      ¡Bienvenido(a)! Este <strong>Instrumento Diagnóstico sobre Competencias TIC e Inteligencia Artificial Generativa</strong> ha sido creado para identificar su nivel de dominio en el uso de tecnologías aplicadas a los ámbitos educativo, investigativo y administrativo.
+    </p>
+    <p>
+      Se trata de una <strong>herramienta de retroalimentación personalizada</strong> que le permitirá reconocer tanto sus fortalezas como las áreas en las que puede seguir creciendo en el uso de herramientas digitales.
+    </p>
+    <p>
+      Le invitamos a leer con atención cada pregunta y responder de forma consciente y honesta. <strong>No existen respuestas correctas o incorrectas</strong>: lo esencial es reflejar su experiencia real para que las estrategias de formación que se diseñen posteriormente sean verdaderamente útiles y pertinentes.
+    </p>
+    <p>
+      El tiempo estimado para completar este instrumento es de <strong>20 minutos</strong>. Agradecemos profundamente su tiempo y compromiso con este proceso de mejora continua.
+    </p>
+    <p>
+      <em>Nota: Todas sus respuestas serán tratadas con estricta confidencialidad y utilizadas exclusivamente con fines de diseño pedagógico.</em>
+    </p>
+  </div>
 
-  <p>
-    Se trata de una <strong>herramienta de retroalimentación personalizada</strong> que le permitirá reconocer tanto sus fortalezas como las áreas en las que puede seguir creciendo en el uso de herramientas digitales.
-  </p>
-
-  <p>
-    Le invitamos a leer con atención cada pregunta y responder de forma consciente y honesta. <strong>No existen respuestas correctas o incorrectas</strong>: lo esencial es reflejar su experiencia real para que las estrategias de formación que se diseñen posteriormente sean verdaderamente útiles y pertinentes.
-  </p>
-
-  <p>
-    El tiempo estimado para completar este instrumento es de <strong>20 minutos</strong>. Agradecemos profundamente su tiempo y compromiso con este proceso de mejora continua.
-  </p>
-
-  <p class="mb-0">
-    <em>Nota: Todas sus respuestas serán tratadas con estricta confidencialidad y utilizadas exclusivamente con fines de diseño pedagógico.</em>
-  </p>
-</div>
-  
+  <!-- Datos del participante -->
   <div class="form-group">
     <label for="institucion">Tipo de Institución:</label>
     <input type="text" id="institucion" placeholder="Ingresa si es Rural o Urbana">
   </div>
- <div class="form-group">
+  <div class="form-group">
     <label for="sector">Sector educativo:</label>
     <select id="sector">
       <option value="">Selecciona una opción</option>
@@ -70,17 +74,14 @@
       <option value="Privado">Privado</option>
     </select>
   </div>
- <div class="form-group">
+  <div class="form-group">
     <label for="ciudad">Ciudad:</label>
     <input type="text" id="ciudad" placeholder="Ingresa tu ciudad">
   </div>
-
-
   <div class="form-group">
     <label for="correo">Correo electrónico:</label>
     <input type="email" id="correo" placeholder="Ingresa tu correo electrónico">
   </div>
-
   <!-- Acordeones completos -->
 
   <!-- Investigación e innovación educativa -->
@@ -216,30 +217,34 @@
     </ul>
   </div>
 
-<button id="submitBtn">Enviar respuestas</button>
+<!-- Acciones -->
+  <button id="submitBtn">Enviar respuestas</button>
   <button id="resetBtn">Reiniciar formulario</button>
   <button id="downloadHistoryBtn">Descargar histórico</button>
   <div id="result"></div>
 
 <script>
-// Funcionalidad acordeones mejorada
+// Acordeón funcional
 const accordions = document.querySelectorAll(".accordion");
 accordions.forEach((accordion) => {
   accordion.addEventListener("click", function () {
-    // Cerrar otros acordeones
     accordions.forEach(acc => {
       if (acc !== this) {
         acc.classList.remove("active");
-        acc.nextElementSibling.style.display = "none";
+        acc.nextElementSibling.style.maxHeight = null;
       }
     });
     this.classList.toggle("active");
     const panel = this.nextElementSibling;
-    panel.style.display = panel.style.display === "block" ? "none" : "block";
+    if (panel.style.maxHeight) {
+      panel.style.maxHeight = null;
+    } else {
+      panel.style.maxHeight = panel.scrollHeight + "px";
+    }
   });
 });
 
-// Definimos componentes y preguntas
+// Componentes y preguntas
 const components = {
   'Investigación e innovación educativa': ['pregunta1', 'pregunta2', 'pregunta3'],
   'Gestión académica': ['pregunta4', 'pregunta5', 'pregunta6'],
@@ -250,13 +255,13 @@ const components = {
   'Inteligencia Artificial aplicada a la educación': ['pregunta19', 'pregunta20', 'pregunta21']
 };
 
-// Capturamos los textos de las preguntas
+// Captura texto de preguntas
 const questionText = {};
 document.querySelectorAll(".panel ul li").forEach((li, index) => {
   questionText['pregunta' + (index + 1)] = li.childNodes[0].textContent.trim();
 });
 
-// Guardado histórico local
+// Guardar histórico local
 function saveToHistory(record) {
   const history = JSON.parse(localStorage.getItem('history')) || [];
   history.push(record);
@@ -280,381 +285,10 @@ function generateExcel(summary, details, institucion, sector, correo) {
 
   const now = new Date();
   const dateString = now.toISOString().slice(0, 19).replace(/:/g, "-").replace("T", "_");
-  XLSX.writeFile(wb, Resultados_Matriz_Competencias_${dateString}.xlsx);
+  XLSX.writeFile(wb, `Resultados_Matriz_Competencias_${dateString}.xlsx`);
 }
-
-function downloadHistoryExcel() {
-  const history = JSON.parse(localStorage.getItem('history')) || [];
-  if (history.length === 0) {
-    alert('No hay datos en el histórico.');
-    return;
-  }
-
-  const wb = XLSX.utils.book_new();
-  const data = [['Institucion','Sector', 'Correo', 'Fecha', 'Componente', 'Pregunta', 'Respuesta']];
-
-  history.forEach(entry => {
-    entry.details.forEach(d => {
-      data.push([entry.institucion, entry.sector, entry.correo, entry.fecha, d.component, d.question, d.answer]);
-    });
-  });
-
-  const sheet = XLSX.utils.aoa_to_sheet(data);
-  XLSX.utils.book_append_sheet(wb, sheet, 'Histórico');
-
-  const now = new Date();
-  const dateString = now.toISOString().slice(0, 19).replace(/:/g, "-").replace("T", "_");
-  XLSX.writeFile(wb, Historico_Matriz_Competencias_${dateString}.xlsx);
-}
-
-// Interpretación básica
-function getInterpretation(positive, total) {
-  const percentage = (positive / total) * 100;
-  if (percentage >= 80) return "Excelente dominio de las competencias.";
-  if (percentage >= 50) return "Buen dominio, pero con oportunidades de mejora.";
-  return "Requiere fortalecimiento en varias áreas.";
-}
-
-// Procesar envío del formulario
-document.getElementById("submitBtn").addEventListener("click", function() {
-  const institucion = document.getElementById("institucion").value.trim();
-  const sector = document.getElementById("sector").value.trim();
-  const correo = document.getElementById("correo").value.trim();
-
-  if (!institucion || !correo || !sector) {
-    alert("Por favor, completa tu institucion, sector y correo electrónico antes de enviar.");
-    return;
-  }
-
-  let positive = 0;
-  let negative = 0;
-  const componentSummary = {};
-  const details = [];
-  let totalQuestions = 0;
-  let unanswered = 0;
-
-  for (const [component, questions] of Object.entries(components)) {
-    let componentPositive = 0;
-    questions.forEach(q => {
-      totalQuestions++;
-      const radios = document.getElementsByName(q);
-      let answer = 'No respondida';
-      if (radios[0].checked) {
-        positive++;
-        componentPositive++;
-        answer = 'Sí';
-      } else if (radios[1].checked) {
-        negative++;
-        answer = 'No';
-      } else {
-        unanswered++;
-      }
-      details.push({ component, question: questionText[q], answer });
-    });
-    componentSummary[component] = componentPositive;
-  }
-
-  if (unanswered > 0) {
-    alert(Por favor, responde todas las preguntas antes de enviar. Preguntas sin responder: ${unanswered});
-    return;
-  }
-
-  const interpretation = getInterpretation(positive, totalQuestions);
-  document.getElementById("result").innerHTML =
-    <strong>Respuestas positivas:</strong> ${positive}<br> +
-    <strong>Respuestas negativas:</strong> ${negative}<br> +
-    <strong>Interpretación:</strong> ${interpretation}<br> +
-    Se descargará un Excel con el resumen.;
-
-  const now = new Date();
-  const fecha = now.toISOString().slice(0, 19).replace(/:/g, "-").replace("T", " ");
-  saveToHistory({ institucion, sector, correo, fecha, details });
-
-  generateExcel(componentSummary, details, institucion, sector, correo);
-});
-
-// Reiniciar formulario
-document.getElementById("resetBtn").addEventListener("click", function() {
-  document.querySelectorAll("input[type='radio']").forEach(input => input.checked = false);
-  document.getElementById("institucion").value = "";
-  document.getElementById("sector").value = "";
-  document.getElementById("correo").value = "";
-  document.getElementById("result").innerHTML = "";
-});
 
 // Descargar histórico
-document.getElementById("downloadHistoryBtn").addEventListener("click", downloadHistoryExcel);
-</script>
-</body>
-</html><!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Matriz de Competencias - Interactiva</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <style>
-    body { font-family: Arial, sans-serif; background-color: #f4f4f9; margin: 0; padding: 20px; }
-    h1 { text-align: center; margin-bottom: 30px; }
-    .form-group { margin-bottom: 15px; }
-    label { display: block; margin-bottom: 5px; }
-    input[type="text"], input[type="email"] {
-      width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;
-    }
-    .accordion {
-      background-color: #ffffff; color: #444; cursor: pointer; padding: 18px; width: 100%; border: none;
-      text-align: left; outline: none; font-size: 18px; transition: 0.4s; border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); margin-bottom: 10px;
-    }
-    .active, .accordion:hover { background-color: #e2e2f0; }
-    .panel {
-      padding: 0 18px 15px 18px; display: none; background-color: white; overflow: hidden;
-      border-radius: 0 0 8px 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); margin-bottom: 15px;
-    }
-    li { margin: 15px 0; list-style: none; }
-    label.inline { display: inline-block; margin-right: 15px; }
-    #submitBtn, #resetBtn, #downloadHistoryBtn {
-      display: block; margin: 20px auto; padding: 10px 20px; background-color: #4CAF50; color: white;
-      border: none; border-radius: 5px; cursor: pointer; font-size: 16px;
-    }
-    #submitBtn:hover, #resetBtn:hover, #downloadHistoryBtn:hover { background-color: #45a049; }
-    #result { text-align: center; font-size: 18px; margin-top: 20px; }
-  </style>
-</head>
-<body>
-  <h1>Matriz de Competencias Interactiva</h1>
-  <div class="form-group">
-    <p>Le damos la bienvenida a este Instrumento Diagnóstico sobre Competencias TIC e Inteligencia Artificial Generativa, diseñado para identificar su nivel de dominio en el uso de tecnologías aplicadas a la educación. Esta es una herramienta de retroalimentación personalizada, cuyo propósito es ayudarle a reconocer sus fortalezas y áreas de mejora en el uso de herramientas digitales en su práctica docente, investigativa o administrativa.<br>
-
-Le pedimos que lea atentamente cada pregunta y responda de manera consciente y honesta, ya que la calidad de este diagnóstico dependerá de la precisión de sus respuestas. No hay respuestas correctas o incorrectas, lo importante es reflejar su experiencia real para que la retroalimentación y las futuras estrategias de formación sean realmente útiles para usted.<br>
-
-Responder las preguntas del instrumento le llevará un aproximado de 20 minutos, le agradecemos su tiempo y compromiso con este proceso. Sus respuestas serán tratadas con total confidencialidad y utilizadas exclusivamente para diseñar rutas de formación pertinentes y personalizadas.</p><br>
-  </div>
-  <div class="form-group">
-    <label for="institucion">Tipo de Institución:</label>
-    <input type="text" id="institucion" placeholder="Ingresa si es Rural o Urbana">
-  </div>
- <div class="form-group">
-    <label for="sector">Sector educativo:</label>
-    <select id="sector">
-      <option value="">Selecciona una opción</option>
-      <option value="Público">Público</option>
-      <option value="Privado">Privado</option>
-    </select>
-  </div>
- <div class="form-group">
-    <label for="ciudad">Ciudad:</label>
-    <input type="text" id="ciudad" placeholder="Ingresa tu ciudad">
-  </div>
-
-
-  <div class="form-group">
-    <label for="correo">Correo electrónico:</label>
-    <input type="email" id="correo" placeholder="Ingresa tu correo electrónico">
-  </div>
-
-  <!-- Acordeones completos -->
-
-  <!-- Investigación e innovación educativa -->
-  <button class="accordion">Investigación e innovación educativa</button>
-  <div class="panel">
-    <ul>
-      <li>¿Participa en redes académicas virtuales para mejorar su práctica docente?<br>
-        <label class="inline"><input type="radio" name="pregunta1"> Sí</label>
-        <label class="inline"><input type="radio" name="pregunta1"> No</label>
-      </li>
-      <li>¿Considera que hace uso de diversas herramientas digitales para innovación educativa?<br>
-        <label class="inline"><input type="radio" name="pregunta2"> Sí</label>
-        <label class="inline"><input type="radio" name="pregunta2"> No</label>
-      </li>
-      <li>¿Diseña instrumentos de recolección de datos para evaluar la innovación educativa?<br>
-        <label class="inline"><input type="radio" name="pregunta3"> Sí</label>
-        <label class="inline"><input type="radio" name="pregunta3"> No</label>
-      </li>
-    </ul>
-  </div>
-
-  <!-- Gestión académica -->
-  <button class="accordion">Gestión académica</button>
-  <div class="panel">
-    <ul>
-      <li>¿Estructura contenidos y actividades académicas mediante herramientas digitales?<br>
-        <label class="inline"><input type="radio" name="pregunta4"> Sí</label>
-        <label class="inline"><input type="radio" name="pregunta4"> No</label>
-      </li>
-      <li>¿Participa de trabajos colaborativos con herramientas digitales?<br>
-        <label class="inline"><input type="radio" name="pregunta5"> Sí</label>
-        <label class="inline"><input type="radio" name="pregunta5"> No</label>
-      </li>
-      <li>¿Genera reportes en plataformas educativas institucionales?<br>
-        <label class="inline"><input type="radio" name="pregunta6"> Sí</label>
-        <label class="inline"><input type="radio" name="pregunta6"> No</label>
-      </li>
-    </ul>
-  </div>
-
-  <!-- Estrategias de evaluación -->
-  <button class="accordion">Estrategias de evaluación</button>
-  <div class="panel">
-    <ul>
-      <li>¿Proporciona comentarios personalizados mediante herramientas digitales?<br>
-        <label class="inline"><input type="radio" name="pregunta7"> Sí</label>
-        <label class="inline"><input type="radio" name="pregunta7"> No</label>
-      </li>
-      <li>¿Diseña instrumentos de evaluación interactivos utilizando herramientas digitales?<br>
-        <label class="inline"><input type="radio" name="pregunta8"> Sí</label>
-        <label class="inline"><input type="radio" name="pregunta8"> No</label>
-      </li>
-      <li>¿Facilita autoevaluaciones estudiantiles con formularios digitales?<br>
-        <label class="inline"><input type="radio" name="pregunta9"> Sí</label>
-        <label class="inline"><input type="radio" name="pregunta9"> No</label>
-      </li>
-      <li>¿Implementa portafolios digitales para documentar evidencias de aprendizaje?<br>
-        <label class="inline"><input type="radio" name="pregunta10"> Sí</label>
-        <label class="inline"><input type="radio" name="pregunta10"> No</label>
-      </li>
-    </ul>
-  </div>
-
-  <!-- Prácticas pedagógicas emergentes -->
-  <button class="accordion">Prácticas pedagógicas emergentes</button>
-  <div class="panel">
-    <ul>
-      <li>¿Implementa metodologías innovadoras mediadas por tecnología?<br>
-        <label class="inline"><input type="radio" name="pregunta11"> Sí</label>
-        <label class="inline"><input type="radio" name="pregunta11"> No</label>
-      </li>
-      <li>¿Utiliza sistemas de reconocimiento digital para premiar logros estudiantiles?<br>
-        <label class="inline"><input type="radio" name="pregunta12"> Sí</label>
-        <label class="inline"><input type="radio" name="pregunta12"> No</label>
-      </li>
-      <li>¿Propone actividades colaborativas mediadas por tecnología?<br>
-        <label class="inline"><input type="radio" name="pregunta13"> Sí</label>
-        <label class="inline"><input type="radio" name="pregunta13"> No</label>
-      </li>
-    </ul>
-  </div>
-
-  <!-- Desarrollo digital estudiantil -->
-  <button class="accordion">Desarrollo digital estudiantil</button>
-  <div class="panel">
-    <ul>
-      <li>¿Orienta la construcción de mapas conceptuales digitales?<br>
-        <label class="inline"><input type="radio" name="pregunta14"> Sí</label>
-        <label class="inline"><input type="radio" name="pregunta14"> No</label>
-      </li>
-      <li>¿Promueve el uso de herramientas digitales en la resolución de problemas?<br>
-        <label class="inline"><input type="radio" name="pregunta15"> Sí</label>
-        <label class="inline"><input type="radio" name="pregunta15"> No</label>
-      </li>
-    </ul>
-  </div>
-
-  <!-- Comunicación y redes educativas -->
-  <button class="accordion">Comunicación y redes educativas</button>
-  <div class="panel">
-    <ul>
-      <li>¿Utiliza plataformas digitales para establecer comunicación con la comunidad educativa?<br>
-        <label class="inline"><input type="radio" name="pregunta16"> Sí</label>
-        <label class="inline"><input type="radio" name="pregunta16"> No</label>
-      </li>
-      <li>¿Promueve el uso de redes educativas para el intercambio de buenas prácticas?<br>
-        <label class="inline"><input type="radio" name="pregunta17"> Sí</label>
-        <label class="inline"><input type="radio" name="pregunta17"> No</label>
-      </li>
-      <li>¿Participa en comunidades virtuales de aprendizaje?<br>
-        <label class="inline"><input type="radio" name="pregunta18"> Sí</label>
-        <label class="inline"><input type="radio" name="pregunta18"> No</label>
-      </li>
-    </ul>
-  </div>
-
-  <!-- Inteligencia Artificial aplicada a la educación -->
-  <button class="accordion">Inteligencia Artificial aplicada a la educación</button>
-  <div class="panel">
-    <ul>
-      <li>¿Utiliza herramientas de IA para personalizar el aprendizaje de los estudiantes?<br>
-        <label class="inline"><input type="radio" name="pregunta19"> Sí</label>
-        <label class="inline"><input type="radio" name="pregunta19"> No</label>
-      </li>
-      <li>¿Emplea asistentes virtuales o chatbots para resolver dudas académicas?<br>
-        <label class="inline"><input type="radio" name="pregunta20"> Sí</label>
-        <label class="inline"><input type="radio" name="pregunta20"> No</label>
-      </li>
-      <li>¿Integra aplicaciones basadas en IA para evaluar el progreso estudiantil?<br>
-        <label class="inline"><input type="radio" name="pregunta21"> Sí</label>
-        <label class="inline"><input type="radio" name="pregunta21"> No</label>
-      </li>
-    </ul>
-  </div>
-
-<button id="submitBtn">Enviar respuestas</button>
-  <button id="resetBtn">Reiniciar formulario</button>
-  <button id="downloadHistoryBtn">Descargar histórico</button>
-  <div id="result"></div>
-
-<script>
-// Funcionalidad acordeones mejorada
-const accordions = document.querySelectorAll(".accordion");
-accordions.forEach((accordion) => {
-  accordion.addEventListener("click", function () {
-    // Cerrar otros acordeones
-    accordions.forEach(acc => {
-      if (acc !== this) {
-        acc.classList.remove("active");
-        acc.nextElementSibling.style.display = "none";
-      }
-    });
-    this.classList.toggle("active");
-    const panel = this.nextElementSibling;
-    panel.style.display = panel.style.display === "block" ? "none" : "block";
-  });
-});
-
-// Definimos componentes y preguntas
-const components = {
-  'Investigación e innovación educativa': ['pregunta1', 'pregunta2', 'pregunta3'],
-  'Gestión académica': ['pregunta4', 'pregunta5', 'pregunta6'],
-  'Estrategias de evaluación': ['pregunta7', 'pregunta8', 'pregunta9', 'pregunta10'],
-  'Prácticas pedagógicas emergentes': ['pregunta11', 'pregunta12', 'pregunta13'],
-  'Desarrollo digital estudiantil': ['pregunta14', 'pregunta15'],
-  'Comunicación y redes educativas': ['pregunta16', 'pregunta17', 'pregunta18'],
-  'Inteligencia Artificial aplicada a la educación': ['pregunta19', 'pregunta20', 'pregunta21']
-};
-
-// Capturamos los textos de las preguntas
-const questionText = {};
-document.querySelectorAll(".panel ul li").forEach((li, index) => {
-  questionText['pregunta' + (index + 1)] = li.childNodes[0].textContent.trim();
-});
-
-// Guardado histórico local
-function saveToHistory(record) {
-  const history = JSON.parse(localStorage.getItem('history')) || [];
-  history.push(record);
-  localStorage.setItem('history', JSON.stringify(history));
-}
-
-// Generar Excel
-function generateExcel(summary, details, institucion, sector, correo) {
-  const wb = XLSX.utils.book_new();
-  const summaryData = [['Institucion', institucion],['Sector', sector], ['Correo', correo], [], ['Componente', 'Positivos']];
-  for (const [component, count] of Object.entries(summary)) {
-    summaryData.push([component, count]);
-  }
-  const summarySheet = XLSX.utils.aoa_to_sheet(summaryData);
-  XLSX.utils.book_append_sheet(wb, summarySheet, 'Resumen');
-
-  const detailsData = [['Componente', 'Pregunta', 'Respuesta']];
-  details.forEach(d => detailsData.push([d.component, d.question, d.answer]));
-  const detailsSheet = XLSX.utils.aoa_to_sheet(detailsData);
-  XLSX.utils.book_append_sheet(wb, detailsSheet, 'Detalle');
-
-  const now = new Date();
-  const dateString = now.toISOString().slice(0, 19).replace(/:/g, "-").replace("T", "_");
-  XLSX.writeFile(wb, Resultados_Matriz_Competencias_${dateString}.xlsx);
-}
-
 function downloadHistoryExcel() {
   const history = JSON.parse(localStorage.getItem('history')) || [];
   if (history.length === 0) {
@@ -663,7 +297,7 @@ function downloadHistoryExcel() {
   }
 
   const wb = XLSX.utils.book_new();
-  const data = [['Institucion','Sector', 'Correo', 'Fecha', 'Componente', 'Pregunta', 'Respuesta']];
+  const data = [['Institucion', 'Sector', 'Correo', 'Fecha', 'Componente', 'Pregunta', 'Respuesta']];
 
   history.forEach(entry => {
     entry.details.forEach(d => {
@@ -676,7 +310,7 @@ function downloadHistoryExcel() {
 
   const now = new Date();
   const dateString = now.toISOString().slice(0, 19).replace(/:/g, "-").replace("T", "_");
-  XLSX.writeFile(wb, Historico_Matriz_Competencias_${dateString}.xlsx);
+  XLSX.writeFile(wb, `Historico_Matriz_Competencias_${dateString}.xlsx`);
 }
 
 // Interpretación básica
@@ -687,23 +321,21 @@ function getInterpretation(positive, total) {
   return "Requiere fortalecimiento en varias áreas.";
 }
 
-// Procesar envío del formulario
+// Procesar envío
 document.getElementById("submitBtn").addEventListener("click", function() {
   const institucion = document.getElementById("institucion").value.trim();
   const sector = document.getElementById("sector").value.trim();
   const correo = document.getElementById("correo").value.trim();
 
   if (!institucion || !correo || !sector) {
-    alert("Por favor, completa tu institucion, sector y correo electrónico antes de enviar.");
+    alert("Por favor, completa tu institución, sector y correo electrónico antes de enviar.");
     return;
   }
 
-  let positive = 0;
-  let negative = 0;
+  let positive = 0, negative = 0, unanswered = 0;
   const componentSummary = {};
   const details = [];
   let totalQuestions = 0;
-  let unanswered = 0;
 
   for (const [component, questions] of Object.entries(components)) {
     let componentPositive = 0;
@@ -727,21 +359,21 @@ document.getElementById("submitBtn").addEventListener("click", function() {
   }
 
   if (unanswered > 0) {
-    alert(Por favor, responde todas las preguntas antes de enviar. Preguntas sin responder: ${unanswered});
+    alert(`Por favor, responde todas las preguntas antes de enviar. Preguntas sin responder: ${unanswered}`);
     return;
   }
 
   const interpretation = getInterpretation(positive, totalQuestions);
-  document.getElementById("result").innerHTML =
-    <strong>Respuestas positivas:</strong> ${positive}<br> +
-    <strong>Respuestas negativas:</strong> ${negative}<br> +
-    <strong>Interpretación:</strong> ${interpretation}<br> +
-    Se descargará un Excel con el resumen.;
+  document.getElementById("result").innerHTML = `
+    <strong>Respuestas positivas:</strong> ${positive}<br>
+    <strong>Respuestas negativas:</strong> ${negative}<br>
+    <strong>Interpretación:</strong> ${interpretation}<br>
+    Se descargará un Excel con el resumen.
+  `;
 
   const now = new Date();
   const fecha = now.toISOString().slice(0, 19).replace(/:/g, "-").replace("T", " ");
   saveToHistory({ institucion, sector, correo, fecha, details });
-
   generateExcel(componentSummary, details, institucion, sector, correo);
 });
 
@@ -750,6 +382,7 @@ document.getElementById("resetBtn").addEventListener("click", function() {
   document.querySelectorAll("input[type='radio']").forEach(input => input.checked = false);
   document.getElementById("institucion").value = "";
   document.getElementById("sector").value = "";
+  document.getElementById("ciudad").value = "";
   document.getElementById("correo").value = "";
   document.getElementById("result").innerHTML = "";
 });
